@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Personal Dashboard</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2910/2910768.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="background-overlay"></div>
+    <div class="background-globes">
+        <div class="globe globe-1"></div>
+        <div class="globe globe-2"></div>
+    </div>
+
+    <!-- Audio Effects -->
+    <audio id="soundComplete" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+    <audio id="soundDelete" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="soundCheer" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
+
+    <div class="dashboard-container">
+        <!-- Sidebar / Stats Area -->
+        <aside class="sidebar glass-panel">
+            <div class="user-profile">
+                <div class="avatar" id="userAvatar"><i class="fas fa-user-astronaut"></i></div>
+                <h3 id="userName">Welcome</h3>
+                <div class="sidebar-controls">
+                    <button id="themeBtn" class="theme-btn" title="Randomize/Disco Mode"><i
+                            class="fas fa-magic"></i></button>
+                    <button id="toggleColorBtn" class="theme-btn" title="Toggle Color Overlay"><i
+                            class="fas fa-eye"></i></button>
+                    <button id="settingsBtn" class="theme-btn" title="Settings"><i class="fas fa-cog"></i></button>
+                </div>
+            </div>
+
+            <!-- Motivational Quote Widget -->
+            <div class="quote-widget">
+                <i class="fas fa-quote-left quote-icon"></i>
+                <p id="quoteText">Loading inspiration...</p>
+            </div>
+
+            <!-- Pomodoro Timer -->
+            <div class="pomodoro-widget" id="pomodoroWidget">
+                <div class="pomodoro-header">
+                    <h4>Focus Timer</h4>
+                    <div class="header-controls">
+                        <button id="pomoSettingsBtn" class="icon-btn" title="Timer Settings"><i
+                                class="fas fa-cog"></i></button>
+                        <button id="expandTimerBtn" class="icon-btn" title="Focus Mode"><i
+                                class="fas fa-expand"></i></button>
+                        <button id="collapseTimerBtn" class="icon-btn hidden" title="Exit Focus Mode"><i
+                                class="fas fa-compress"></i></button>
+                    </div>
+                </div>
+
+                <div class="timer-display" id="timerDisplay">25:00</div>
+
+                <div class="timer-controls">
+                    <button id="startTimerBtn" class="timer-btn" title="Start/Pause"><i
+                            class="fas fa-play"></i></button>
+                    <button id="resetTimerBtn" class="timer-btn" title="Reset"><i class="fas fa-redo"></i></button>
+                </div>
+
+                <div class="timer-modes">
+                    <button class="mode-btn active" data-time="25">25m</button>
+                    <button class="mode-btn" data-time="60">60m</button>
+                    <!-- Breaks are auto-triggered -->
+                </div>
+
+                <!-- Focus Mode Quote -->
+                <div class="focus-quote" id="focusQuote">
+                    "Stay focused and never give up."
+                </div>
+
+                <!-- Pomodoro Settings Panel (Hidden) -->
+                <div class="pomo-settings-panel hidden" id="pomoSettingsPanel">
+                    <h5>Customize Timer</h5>
+
+                    <div class="setting-group">
+                        <h6>Durations (min)</h6>
+                        <div class="setting-row">
+                            <label>Standard:</label>
+                            <input type="number" id="settingTimeStandard" value="25" min="1" max="180">
+                        </div>
+                        <div class="setting-row">
+                            <label>Long Focus:</label>
+                            <input type="number" id="settingTimeLong" value="60" min="1" max="180">
+                        </div>
+                        <div class="setting-row">
+                            <label>Short Break:</label>
+                            <input type="number" id="settingTimeShortBreak" value="5" min="1" max="60">
+                        </div>
+                        <div class="setting-row">
+                            <label>Long Break:</label>
+                            <input type="number" id="settingTimeLongBreak" value="10" min="1" max="60">
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;">
+
+                    <div class="setting-row">
+                        <label>Font:</label>
+                        <select id="pomoFontSelect">
+                            <option value="'Courier New', monospace">Digital</option>
+                            <option value="'Outfit', sans-serif">Modern</option>
+                            <option value="'Georgia', serif">Classic</option>
+                        </select>
+                    </div>
+                    <div class="setting-row">
+                        <label>Themecolor:</label>
+                        <div class="color-options">
+                            <button class="color-btn" data-color="#fff" style="background:#fff;"></button>
+                            <button class="color-btn" data-color="#ff7eb3" style="background:#ff7eb3;"></button>
+                            <button class="color-btn" data-color="#00f2fe" style="background:#00f2fe;"></button>
+                            <button class="color-btn" data-color="#f9d423" style="background:#f9d423;"></button>
+                        </div>
+                    </div>
+                    <button id="closePomoSettings" class="btn-small">Close</button>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <h4>Progress</h4>
+                <div class="progress-circle" id="progressCircle">
+                    <span id="progressText">0%</span>
+                    <svg>
+                        <circle cx="70" cy="70" r="60"></circle>
+                        <circle cx="70" cy="70" r="60" id="progressIndicator"></circle>
+                    </svg>
+                </div>
+                <div class="stats-detail">
+                    <p><span id="completedCount">0</span> Completed</p>
+                    <p><span id="totalCount">0</span> Total</p>
+                </div>
+            </div>
+
+            <div class="weather-widget">
+                <div class="time-display" id="clock">00:00</div>
+                <div class="date-display" id="date">Loading...</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header glass-panel">
+                <h1>My Tasks</h1>
+                <div class="filter-tabs">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="active">Active</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                </div>
+            </div>
+
+            <div class="add-task-panel glass-panel">
+                <div class="input-group">
+                    <input type="text" id="taskInput" placeholder="What needs to be done?">
+                </div>
+                <div class="options-group">
+                    <input type="datetime-local" id="taskDueDate" title="Due Date">
+                    <select id="taskPriority" title="Priority">
+                        <option value="low">Low Priority</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                    <button id="addTaskBtn"><i class="fas fa-plus"></i> Add Task</button>
+                </div>
+            </div>
+
+            <div class="tasks-container glass-panel">
+                <ul id="taskList">
+                    <!-- Tasks will be injected here -->
+                </ul>
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-clipboard-check"></i>
+                    <p>No tasks yet. Add one above!</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close-modal">&times;</span>
+            <h2>Settings</h2>
+
+            <div class="form-group">
+                <label>Display Name</label>
+                <input type="text" id="settingName" placeholder="Your Name">
+            </div>
+
+            <div class="form-group">
+                <label>Avatar Image</label>
+                <input type="file" id="settingAvatarFile" accept="image/*">
+                <small>Or use URL below</small>
+                <input type="text" id="settingAvatar" placeholder="https://example.com/avatar.jpg">
+            </div>
+
+            <div class="form-group">
+                <label>Background Image</label>
+                <input type="file" id="settingBgFile" accept="image/*">
+                <small>Or use URL below</small>
+                <input type="text" id="settingBg" placeholder="https://source.unsplash.com/random/1920x1080">
+                <button id="saveSettingsBtn" class="btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
